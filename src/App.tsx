@@ -1,26 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Auth from './pages/Auth';
+import Vault from './pages/Vault';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/vault" element={<Vault />} />
+            <Route path="/" element={<HomeRedirect />} />
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
+}
+
+function HomeRedirect() {
+  const { user } = useAuth();
+  return <Navigate to={user ? '/vault' : '/auth'} replace />;
 }
 
 export default App;
